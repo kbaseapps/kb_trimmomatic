@@ -61,7 +61,7 @@ class kb_trimmomaticTest(unittest.TestCase):
 
         try:
            print ("Now trying to copy")
-           shutil.copytree(src_dir, dst_dir)
+           shutil.copytree(src_dir, dest_dir)
         except Exception as e:
            print(e)
 
@@ -164,8 +164,8 @@ class kb_trimmomaticTest(unittest.TestCase):
         # 1) upload files to shock
         token = self.ctx['token']
 
-        src_file = '/kb/module/test/data/test_quick.fwd.fq'
-        dst_file = '/kb/module/work/tmp/test_quick.fwd.fq'
+        src_file = '/kb/module/test/data/'+read_lib_basename+'.fwd.fq'
+        dst_file = '/kb/module/work/tmp/'+read_lib_basename+'.fwd.fq'
         shutil.copy(src_file, dst_file)
         dfx = self.dfu.file_to_shock({'file_path': dst_file, 'make_handle': True})
         print (dfx)
@@ -231,14 +231,14 @@ class kb_trimmomaticTest(unittest.TestCase):
         # 1) upload files to shock
         token = self.ctx['token']
 
-        fwd_src_file = '/kb/module/test/data/test_quick.fwd.fq'
-        fwd_dst_file = '/kb/module/work/tmp/test_quick.fwd.fq'
+        fwd_src_file = '/kb/module/test/data/'+read_lib_basename+'.fwd.fq'
+        fwd_dst_file = '/kb/module/work/tmp/'+read_lib_basename+'.fwd.fq'
         shutil.copy(fwd_src_file, fwd_dst_file)
         fwd_dfx = self.dfu.file_to_shock({'file_path': fwd_dst_file, 'make_handle': True})
         print (fwd_dfx)
 
-        rev_src_file = '/kb/module/test/data/test_quick.rev.fq'
-        rev_dst_file = '/kb/module/work/tmp/test_quick.rev.fq'
+        rev_src_file = '/kb/module/test/data/'+read_lib_basename+'.rev.fq'
+        rev_dst_file = '/kb/module/work/tmp/'+read_lib_basename+'.rev.fq'
         shutil.copy(rev_src_file, rev_dst_file)
         rev_dfx = self.dfu.file_to_shock({'file_path': rev_dst_file, 'make_handle': True})
         print (rev_dfx)
@@ -542,58 +542,58 @@ class kb_trimmomaticTest(unittest.TestCase):
     #     self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseFile.SingleEndLibrary')
 
 
-    ### TEST 2: run Trimmomatic against just one paired end library
-    #
-    # Uncomment to skip this test
-    #HIDE @unittest.skip("skipped test_runTrimmomatic_PairedEndLibrary()")
-    def test_runTrimmomatic_PairedEndLibrary(self):
+    # ### TEST 2: run Trimmomatic against just one paired end library
+    # #
+    # # Uncomment to skip this test
+    # #HIDE @unittest.skip("skipped test_runTrimmomatic_PairedEndLibrary()")
+    # def test_runTrimmomatic_PairedEndLibrary(self):
 
-        print ("\n\nRUNNING: test_runTrimmomatic_PairedEndLibrary()")
-        print ("\n=============================================\n\n")
+    #     print ("\n\nRUNNING: test_runTrimmomatic_PairedEndLibrary()")
+    #     print ("\n=============================================\n\n")
 
-        # figure out where the test data lives
-        pe_lib_info = self.getPairedEndLibInfo('test_quick')
-        pprint(pe_lib_info)
+    #     # figure out where the test data lives
+    #     pe_lib_info = self.getPairedEndLibInfo('test_quick')
+    #     pprint(pe_lib_info)
 
-        # run method
-        output_name = 'output_trim.PElib'
-        params = {
-            'input_ws': pe_lib_info[7],
-            'output_ws': pe_lib_info[7],
-            'input_reads_ref': str(pe_lib_info[6])+'/'+str(pe_lib_info[0]),
-            'output_reads_name': output_name,
-            #'read_type': 'PE',
-            #'quality_encoding': 'phred33',
-            'translate_to_phred33': 1,
-            'adapter_clip': {
-                'adapterFa': None,
-                'seed_mismatches': None,
-                'palindrom_clip_threshold': None,
-                'simple_clip_threshold': None
-                },
-            'sliding_window': {
-                'sliding_window_size': 4,
-                'sliding_window_min_size': 15
-                },
-            'leading_min_quality': 3,
-            'trailing_min_quality': 3,
-            'crop_length': 0,
-            'head_crop_length': 0,
-            'min_length': 36
-        }
+    #     # run method
+    #     output_name = 'output_trim.PElib'
+    #     params = {
+    #         'input_ws': pe_lib_info[7],
+    #         'output_ws': pe_lib_info[7],
+    #         'input_reads_ref': str(pe_lib_info[6])+'/'+str(pe_lib_info[0]),
+    #         'output_reads_name': output_name,
+    #         #'read_type': 'PE',
+    #         #'quality_encoding': 'phred33',
+    #         'translate_to_phred33': 1,
+    #         'adapter_clip': {
+    #             'adapterFa': None,
+    #             'seed_mismatches': None,
+    #             'palindrom_clip_threshold': None,
+    #             'simple_clip_threshold': None
+    #             },
+    #         'sliding_window': {
+    #             'sliding_window_size': 4,
+    #             'sliding_window_min_size': 15
+    #             },
+    #         'leading_min_quality': 3,
+    #         'trailing_min_quality': 3,
+    #         'crop_length': 0,
+    #         'head_crop_length': 0,
+    #         'min_length': 36
+    #     }
 
-        result = self.getImpl().runTrimmomatic(self.getContext(),params)
-        print('RESULT:')
-        pprint(result)
+    #     result = self.getImpl().runTrimmomatic(self.getContext(),params)
+    #     print('RESULT:')
+    #     pprint(result)
 
-        # check the output
-        paired_output_name = output_name + '_paired'
-        info_list = self.wsClient.get_object_info([{'ref':pe_lib_info[7] + '/' + paired_output_name}], 1)
-        self.assertEqual(len(info_list),1)
-        trimmed_reads_info = info_list[0]
-        self.assertEqual(trimmed_reads_info[1],paired_output_name)
-        self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseFile.PairedEndLibrary')
-"""
+    #     # check the output
+    #     paired_output_name = output_name + '_paired'
+    #     info_list = self.wsClient.get_object_info([{'ref':pe_lib_info[7] + '/' + paired_output_name}], 1)
+    #     self.assertEqual(len(info_list),1)
+    #     trimmed_reads_info = info_list[0]
+    #     self.assertEqual(trimmed_reads_info[1],paired_output_name)
+    #     self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseFile.PairedEndLibrary')
+
 
     ### TEST 3: run Trimmomatic against a Single End Library reads set
     #
@@ -647,7 +647,7 @@ class kb_trimmomaticTest(unittest.TestCase):
         self.assertEqual(trimmed_reads_info[1],single_output_name)
         self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseSets.ReadsSet')
 
-
+"""
     ### TEST 4: run Trimmomatic against a Paired End Library reads set
     #
     # Uncomment to skip this test

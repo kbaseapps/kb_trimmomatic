@@ -230,54 +230,32 @@ class kb_trimmomaticTest(unittest.TestCase):
 
         # 1) upload files to shock
         token = self.ctx['token']
-        forward_shock_file = self.upload_file_to_shock('data/'+read_lib_basename+'.fwd.fq')
-        reverse_shock_file = self.upload_file_to_shock('data/'+read_lib_basename+'.rev.fq')
-        #pprint(forward_shock_file)
-        #pprint(reverse_shock_file)
 
-        # 2) create handle
-        hs = HandleService(url=self.handleURL, token=token)
-        forward_handle = hs.persist_handle({
-                                        'id' : forward_shock_file['id'],
-                                        'type' : 'shock',
-                                        'url' : self.shockURL,
-                                        'file_name': forward_shock_file['file']['name'],
-                                        'remote_md5': forward_shock_file['file']['checksum']['md5']})
+        fwd_src_file = '/kb/module/test/data/test_quick.fwd.fq'
+        fwd_dst_file = '/kb/module/work/tmp/test_quick.fwd.fq'
+        shutil.copy(fwd_src_file, fwd_dst_file)
+        fwd_dfx = self.dfu.file_to_shock({'file_path': fwd_dst_file, 'make_handle': True})
+        print (fwd_dfx)
 
-        reverse_handle = hs.persist_handle({
-                                        'id' : reverse_shock_file['id'],
-                                        'type' : 'shock',
-                                        'url' : self.shockURL,
-                                        'file_name': reverse_shock_file['file']['name'],
-                                        'remote_md5': reverse_shock_file['file']['checksum']['md5']})
+        rev_src_file = '/kb/module/test/data/test_quick.rev.fq'
+        rev_dst_file = '/kb/module/work/tmp/test_quick.rev.fq'
+        shutil.copy(rev_src_file, rev_dst_file)
+        rev_dfx = self.dfu.file_to_shock({'file_path': rev_dst_file, 'make_handle': True})
+        print (rev_dfx)
 
-        # 3) save to WS
+        # 2) save to WS
         paired_end_library = {
             'lib1': {
-                'file': {
-                    'hid':forward_handle,
-                    'file_name': forward_shock_file['file']['name'],
-                    'id': forward_shock_file['id'],
-                    'url': self.shockURL,
-                    'type':'shock',
-                    'remote_md5':forward_shock_file['file']['checksum']['md5']
-                },
+                'file': fwd_dfx['handle'],
                 'encoding':'UTF8',
                 'type':'fastq',
-                'size':forward_shock_file['file']['size']
+                'size':fwd_dfx['size']
             },
             'lib2': {
-                'file': {
-                    'hid':reverse_handle,
-                    'file_name': reverse_shock_file['file']['name'],
-                    'id': reverse_shock_file['id'],
-                    'url': self.shockURL,
-                    'type':'shock',
-                    'remote_md5':reverse_shock_file['file']['checksum']['md5']
-                },
+                'file': rev_dfx['handle'],
                 'encoding':'UTF8',
                 'type':'fastq',
-                'size':reverse_shock_file['file']['size']
+                'size':rev_dfx['size']
 
             },
             'interleaved':0,
@@ -511,59 +489,59 @@ class kb_trimmomaticTest(unittest.TestCase):
         # 10 - usermeta meta
 
 
-    ### TEST 1: run Trimmomatic against just one single end library
-    #
-    # Uncomment to skip this test
-    #HIDE @unittest.skip("skipped test_runTrimmomatic_SingleEndLibrary()")
-    def test_runTrimmomatic_SingleEndLibrary(self):
+    # ### TEST 1: run Trimmomatic against just one single end library
+    # #
+    # # Uncomment to skip this test
+    # #HIDE @unittest.skip("skipped test_runTrimmomatic_SingleEndLibrary()")
+    # def test_runTrimmomatic_SingleEndLibrary(self):
 
-        print ("\n\nRUNNING: test_runTrimmomatic_SingleEndLibrary()")
-        print ("===============================================\n\n")
+    #     print ("\n\nRUNNING: test_runTrimmomatic_SingleEndLibrary()")
+    #     print ("===============================================\n\n")
 
-        # figure out where the test data lives
-        se_lib_info = self.getSingleEndLibInfo('test_quick')
-        pprint(se_lib_info)
+    #     # figure out where the test data lives
+    #     se_lib_info = self.getSingleEndLibInfo('test_quick')
+    #     pprint(se_lib_info)
 
-        # run method
-        output_name = 'output_trim.SElib'
-        params = {
-            'input_ws': se_lib_info[7],
-            'output_ws': se_lib_info[7],
-            'input_reads_ref': str(se_lib_info[6])+'/'+str(se_lib_info[0]),
-            'output_reads_name': output_name,
-            #'read_type': 'SE',
-            #'quality_encoding': 'phred33',
-            'translate_to_phred33': 1,
-            'adapter_clip': {
-                'adapterFa': None,
-                'seed_mismatches': None,
-                'palindrom_clip_threshold': None,
-                'simple_clip_threshold': None
-                },
-            'sliding_window': {
-                'sliding_window_size': 4,
-                'sliding_window_min_size': 15
-                },
-            'leading_min_quality': 3,
-            'trailing_min_quality': 3,
-            'crop_length': 0,
-            'head_crop_length': 0,
-            'min_length': 36
-        }
+    #     # run method
+    #     output_name = 'output_trim.SElib'
+    #     params = {
+    #         'input_ws': se_lib_info[7],
+    #         'output_ws': se_lib_info[7],
+    #         'input_reads_ref': str(se_lib_info[6])+'/'+str(se_lib_info[0]),
+    #         'output_reads_name': output_name,
+    #         #'read_type': 'SE',
+    #         #'quality_encoding': 'phred33',
+    #         'translate_to_phred33': 1,
+    #         'adapter_clip': {
+    #             'adapterFa': None,
+    #             'seed_mismatches': None,
+    #             'palindrom_clip_threshold': None,
+    #             'simple_clip_threshold': None
+    #             },
+    #         'sliding_window': {
+    #             'sliding_window_size': 4,
+    #             'sliding_window_min_size': 15
+    #             },
+    #         'leading_min_quality': 3,
+    #         'trailing_min_quality': 3,
+    #         'crop_length': 0,
+    #         'head_crop_length': 0,
+    #         'min_length': 36
+    #     }
 
-        result = self.getImpl().runTrimmomatic(self.getContext(),params)
-        print('RESULT:')
-        pprint(result)
+    #     result = self.getImpl().runTrimmomatic(self.getContext(),params)
+    #     print('RESULT:')
+    #     pprint(result)
 
-        # check the output
-        single_output_name = output_name
-        info_list = self.wsClient.get_object_info([{'ref':se_lib_info[7] + '/' + single_output_name}], 1)
-        self.assertEqual(len(info_list),1)
-        trimmed_reads_info = info_list[0]
-        self.assertEqual(trimmed_reads_info[1],single_output_name)
-        self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseFile.SingleEndLibrary')
+    #     # check the output
+    #     single_output_name = output_name
+    #     info_list = self.wsClient.get_object_info([{'ref':se_lib_info[7] + '/' + single_output_name}], 1)
+    #     self.assertEqual(len(info_list),1)
+    #     trimmed_reads_info = info_list[0]
+    #     self.assertEqual(trimmed_reads_info[1],single_output_name)
+    #     self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseFile.SingleEndLibrary')
 
-"""
+
     ### TEST 2: run Trimmomatic against just one paired end library
     #
     # Uncomment to skip this test
@@ -615,7 +593,7 @@ class kb_trimmomaticTest(unittest.TestCase):
         trimmed_reads_info = info_list[0]
         self.assertEqual(trimmed_reads_info[1],paired_output_name)
         self.assertEqual(trimmed_reads_info[2].split('-')[0],'KBaseFile.PairedEndLibrary')
-
+"""
 
     ### TEST 3: run Trimmomatic against a Single End Library reads set
     #

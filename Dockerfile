@@ -27,8 +27,8 @@ RUN pip install coverage
 WORKDIR /kb/module
 
 # Install Trimmomatic
-RUN curl http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip -o Trimmomatic-0.36.zip && \
-    unzip Trimmomatic-0.36.zip
+RUN curl -L https://github.com/usadellab/Trimmomatic/files/5854859/Trimmomatic-0.39.zip -o Trimmomatic-0.39.zip && \
+    unzip Trimmomatic-0.39.zip
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work

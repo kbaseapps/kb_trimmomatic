@@ -1,9 +1,13 @@
 {
-	"ver": "1.2.8",
+	"ver": "1.2.15",
 
 	"authors": [
 		"psdehal",
-		"dylan"
+		"dylan",
+		"wjriehl",
+		"umaganapathyswork",
+		"tgu2",
+		"dan_hopp"
 	],
 	"contact": "http://kbase.us/contact-us/",
 	"visible": true,

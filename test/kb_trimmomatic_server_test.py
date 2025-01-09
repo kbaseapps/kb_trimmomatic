@@ -17,8 +17,6 @@ from pprint import pprint
 
 from requests_toolbelt import MultipartEncoder
 from biokbase.workspace.client import Workspace as workspaceService
-# from biokbase.AbstractHandle.Client import AbstractHandle as HandleService
-
 from installed_clients.DataFileUtilClient import DataFileUtil
 
 

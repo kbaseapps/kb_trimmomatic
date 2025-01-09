@@ -1,3 +1,8 @@
+### Version 1.2.15
+__Changes__
+- replaced AbstractHandle with DataFileUtil
+- updated github curl
+
 ### Version 1.2.14
 __Changes__
 - improve docs

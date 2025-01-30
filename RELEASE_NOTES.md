@@ -1,3 +1,9 @@
+### Version 1.2.15
+__Changes__
+- replaced AbstractHandle with DataFileUtil
+- updated github curl
+- upgrade to Trimmomatic version 0.39
+
 ### Version 1.2.14
 __Changes__
 - improve docs

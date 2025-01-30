@@ -1,5 +1,5 @@
 FROM kbase/kbase:sdkbase2.latest
-MAINTAINER KBase Developer
+LABEL maintainer="KBase Developer"
 # -----------------------------------------
 # In this section, you can install any system dependencies required
 # to run your App.  For instance, you could place an apt-get update or
@@ -13,27 +13,21 @@ MAINTAINER KBase Developer
 
 RUN pip install coverage
 
-# update security libraries in the base image
-RUN pip install cffi --upgrade \
-    && pip install pyopenssl --upgrade \
-    && pip install ndg-httpsclient --upgrade \
-    && pip install pyasn1 --upgrade \
-    && pip install requests --upgrade \
-    && pip install 'requests[security]' --upgrade
-
 # -----------------------------------------
+
+# WORKDIR and Trimmomatic installation should be before COPY kb/module
+WORKDIR /kb/module
+
+# Install Trimmomatic
+RUN curl -L https://github.com/usadellab/Trimmomatic/files/5854859/Trimmomatic-0.39.zip -o Trimmomatic-0.39.zip && \
+    unzip Trimmomatic-0.39.zip
 
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 RUN chmod -R a+rw /kb/module
 
-WORKDIR /kb/module
-
 RUN make all
 
-# Install Trimmomatic
-RUN curl http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip -o Trimmomatic-0.36.zip && \
-    unzip Trimmomatic-0.36.zip
 
 ENTRYPOINT [ "./scripts/entrypoint.sh" ]
 

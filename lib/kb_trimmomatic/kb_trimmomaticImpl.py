@@ -40,14 +40,14 @@ execTrimmomaticSingleLibrary() runs Trimmomatic on a single library
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "1.2.11"
+    VERSION = "1.2.15"
     GIT_URL = "https://github.com/kbaseapps/kb_trimmomatic"
     GIT_COMMIT_HASH = "9ff31d23f62491d7a47c004f6cf8f800535b47f1"
 
     #BEGIN_CLASS_HEADER
     workspaceURL = None
-    TRIMMOMATIC = 'java -jar /kb/module/Trimmomatic-0.36/trimmomatic-0.36.jar'
-    ADAPTER_DIR = '/kb/module/Trimmomatic-0.36/adapters/'
+    TRIMMOMATIC = 'java -jar /kb/module/Trimmomatic-0.39/trimmomatic-0.39.jar'
+    ADAPTER_DIR = '/kb/module/Trimmomatic-0.39/adapters/'
 
     def log(self, target, message):
         if target is not None:
